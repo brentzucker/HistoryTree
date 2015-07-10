@@ -79,16 +79,23 @@ function millisecondsToDateTimeString(milliseconds){
  *
  */
 
+
+
 document.addEventListener('DOMContentLoaded', function() {
-	console.log('Hello World');
-	
 	var url = '';
 
 	var array_of_history_items = getHistory(url);
 
-	console.log(array_of_history_items);
-
 	//getVisits(url);
+});
 
-	console.log('done');
+/************************************* JQUERY *************************************/
+
+$(document).ready(function(){
+	$("#text-input").on("keydown",function(e) {
+	    if(e.keyCode == 13) {
+	        var inputText = $(this).val();
+	        console.log(inputText);
+	    }
+	});
 });
