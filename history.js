@@ -1,6 +1,6 @@
 function getHistory(url){
 	query = url;
-	chrome.history.search({text: query}, function(array_of_history_item_results){
+	var x = chrome.history.search({text: query}, function(array_of_history_item_results){
 
 		var ul = document.getElementById('list');
 
@@ -15,9 +15,14 @@ function getHistory(url){
 		 	li.appendChild(a);
 		 	ul.appendChild(li);
 
-		 	getVisits(history_item);
-		}	
+		 	//Gets visits 
+		 	getVisits(history_item.url);
+		}
+		//How can I return from here?
+		return array_of_history_item_results;	
 	});
+
+	console.log(x);
 };
 
 function getVisits(url_input){
@@ -27,14 +32,18 @@ function getVisits(url_input){
 
 		for(var j=0; j<array_of_visit_item_results.length; j++){
 			visit_item = array_of_visit_item_results[j];
+			//console.log(visit_item);
 
 			for (var property in visit_item){
 				if(visit_item.hasOwnProperty(property)){
+
+					var output_string = property + ' : ' + visit_item[property];
+
 					var li = document.createElement('li');
-					li.appendChild(document.createTextNode(property + ' : ' + visit_item[property]));
+					li.appendChild(document.createTextNode(output_string));
 					ul.appendChild(li);
 				}
-			}
+			}			
 		}
 	});
 };
@@ -75,7 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	var url = '';
 
-	getHistory(url);
+	var array_of_history_items = getHistory(url);
+
+	console.log(array_of_history_items);
 
 	//getVisits(url);
 
