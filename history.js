@@ -7,16 +7,9 @@ function getHistory(url){
 		for(var i=0; i<array_of_history_item_results.length; i++){
 			var history_item = array_of_history_item_results[i];
 
-			var link = history_item.url;
-			var time = millisecondsToDateTimeString(history_item.lastVisitTime);
-			var name = history_item.title;
-			var id = history_item.id;
-			var link_text = time + '  -  ' + link + '  -  ' + id;
+			var link_text = historyItemToString(history_item);
 
-			var a = document.createElement('a');
-			a.innerHTML = link_text;
-			a.href = link;
-			a.target = '_blank';
+			var a = buildLink(link_text, history_item.url);
 
 		 	var li = document.createElement('li');
 		 	li.appendChild(a);
@@ -46,11 +39,36 @@ function getVisits(url_input){
 	});
 };
 
+/* Helper functions
+ *
+ */
+
+function historyItemToString(history_item){
+	var link = history_item.url;
+	var time = millisecondsToDateTimeString(history_item.lastVisitTime);
+	var name = history_item.title;
+	var id = history_item.id;
+	var link_text = time + '  -  ' + link + '  -  ' + id;
+	return link_text;
+};
+
+function buildLink(link_text, url){
+	var a = document.createElement('a');
+	a.innerHTML = link_text;
+	a.href = url;
+	a.target = '_blank';
+	return a;
+};
+
 function millisecondsToDateTimeString(milliseconds){
 	var date_time = new Date(milliseconds);
 	return date_time.toLocaleDateString() + ' ' + date_time.toLocaleTimeString();
 
 };
+
+/* "Main method"
+ *
+ */
 
 document.addEventListener('DOMContentLoaded', function() {
 	console.log('Hello World');
@@ -59,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	getHistory(url);
 
-	getVisits(url);
+	//getVisits(url);
 
 	console.log('done');
 });
