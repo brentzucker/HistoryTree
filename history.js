@@ -46,6 +46,22 @@ function getVisits(url_input){
 	});
 };
 
+function visitNode(visit_item) {
+
+	//Copy VisitItem attributes
+	this.id = visit_item.id;
+	this.visitId = visit_item.visitId;
+	this.visitTime = visit_item.visitTime;
+	this.referringVisitId = visit_item.referringVisitId;
+	this.transition = visit_item.transition;
+
+	this.children = [];
+
+	this.addChild = function(new_child) {
+		this.children.push(new_child)
+	};
+}
+
 function getHistoryItems(url, start_time) {
 	
 	var all_visited_items = [];
@@ -76,6 +92,31 @@ function getHistoryItems(url, start_time) {
 
 		console.log('All visited items');
 		console.log(all_visited_items);
+
+		//Tree of visit items
+
+		treeNodes_list = [];
+
+		for (var item in all_visited_items) {
+
+			console.log(item);
+		}
+
+		for (var j = 0; j < all_visited_items.length; j++) {
+
+			var visit_item = all_visited_items[j];
+			var helper_node = new visitNode(visit_item);
+
+			treeNodes_list.push(helper_node);
+
+			console.log(treeNodes_list);
+		}
+
+		console.log('Tree Nodes List');
+		console.log(treeNodes_list);
+
+		//Remove all Roots from all_visited_items
+		//A visited_item is a root if its refferingId = 0
 	});
 }
 
