@@ -1,6 +1,6 @@
 function getHistory(url){
 	query = url;
-	var x = chrome.history.search({text: query}, function(array_of_history_item_results){
+	chrome.history.search({text: query}, function(array_of_history_item_results){
 
 		var ul = document.getElementById('list');
 
@@ -21,9 +21,51 @@ function getHistory(url){
 		//How can I return from here?
 		return array_of_history_item_results;	
 	});
-
-	console.log(x);
 };
+
+var results = [];
+
+function getHistoryItems(url, start_time) {
+	
+	var all_visited_items = [];
+	chrome.history.search({text: url, startTime : start_time}, function(history_items) {
+		
+		//loop through all history items, get each array for visited items
+		for (var i = 0; i < history_items.length; i++) {
+
+			var url_to_retrieve = history_items[i].url;
+
+			(function () {
+
+				chrome.history.getVisits({ url : url_to_retrieve }, function(visit_items) {
+
+					//append all visit_items to all_visited_items
+					//all_visited_items.push(visit_items);
+					for (var j = 0; j < visit_items.length; j++) {
+
+						//If the visit occurred after the given start date and is defined
+
+						if (visit_items[i] !== undefined) {
+
+							if (start_time > visit_items[i].visitTime) {
+
+								all_visited_items.push(visit_items[i]);
+								console.log((new Date(start_time)) + '  <?  ' + (new Date(visit_items[i].visitTime)) );
+							}
+							else
+							{
+								//console.log(visit_items[i]);
+							}
+						}
+					}
+				});
+			}) ();
+		}
+
+		console.log('All visited items');
+		console.log(all_visited_items);
+	});
+}
 
 function getVisits(url_input){
 	var ul = document.getElementById('list');
@@ -80,13 +122,14 @@ function millisecondsToDateTimeString(milliseconds){
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-	console.log('Hello World');
 	
 	var url = '';
+	var start_time = (new Date('2015-07-07')).getTime();
 
 	var array_of_history_items = getHistory(url);
 
-	console.log(array_of_history_items);
+	getHistoryItems(url, start_time);
+
 
 	//getVisits(url);
 
