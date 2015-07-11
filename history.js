@@ -35,31 +35,28 @@ function getHistoryItems(url, start_time) {
 
 			var url_to_retrieve = history_items[i].url;
 
-			(function () {
+			chrome.history.getVisits({ url : url_to_retrieve }, function(visit_items) {
 
-				chrome.history.getVisits({ url : url_to_retrieve }, function(visit_items) {
+				//append all visit_items to all_visited_items
+				//all_visited_items.push(visit_items);
+				for (var j = 0; j < visit_items.length; j++) {
 
-					//append all visit_items to all_visited_items
-					//all_visited_items.push(visit_items);
-					for (var j = 0; j < visit_items.length; j++) {
+					//If the visit occurred after the given start date and is defined
 
-						//If the visit occurred after the given start date and is defined
+					if (visit_items[i] !== undefined) {
 
-						if (visit_items[i] !== undefined) {
+						if (start_time > visit_items[i].visitTime) {
 
-							if (start_time > visit_items[i].visitTime) {
-
-								all_visited_items.push(visit_items[i]);
-								console.log((new Date(start_time)) + '  <?  ' + (new Date(visit_items[i].visitTime)) );
-							}
-							else
-							{
-								//console.log(visit_items[i]);
-							}
+							all_visited_items.push(visit_items[i]);
+							console.log((new Date(start_time)) + '  <?  ' + (new Date(visit_items[i].visitTime)) );
+						}
+						else
+						{
+							//console.log(visit_items[i]);
 						}
 					}
-				});
-			}) ();
+				}
+			});
 		}
 
 		console.log('All visited items');
