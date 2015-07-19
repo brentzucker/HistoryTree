@@ -10,6 +10,12 @@
     	"default_popup": "history.html", 
     	"default_title": "History Tree"
     },
+    "content_scripts": [
+    	{
+    		"matches": ["http://www.google.com/"],
+    		"js": ["jquery-1.11.3.js", "history.js"]
+    	}
+    ],
     "permissions": [
       "history"
     ]
