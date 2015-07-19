@@ -100,49 +100,53 @@ function isParent(visitId, referringVisitId) {
 	return visitId === referringVisitId
 }
 
+function visitItemsToVisitNodes(visit_item_list, url_array) {
 
-function treeNodes(all_visited_items, url_array) {
-	console.log(url_array);
-    console.log('All visited items');
-    console.log(all_visited_items);
+	var visitNodes_list = [];
 
-    //Tree of visit items
+    for (var j = 0; j < visit_item_list.length; j++) {
 
-    var visitNodes_list = [];
-
-    for (var j = 0; j < all_visited_items.length; j++) {
-
-        var visit_item = all_visited_items[j];
-        var helper_node = new visitNode(visit_item, url_array);
+        var visit_item = visit_item_list[j],
+        	helper_node = new visitNode(visit_item, url_array);
 
         visitNodes_list.push(helper_node);
     }
+    return visitNodes_list;
+}
 
-    var num_of_root_visit_nodes = (getRootVisitNodes(visitNodes_list)).length;
+//Tree of visit items
+function treeNodes(all_visited_items, url_array) {
+    console.log('All visited items');
+    console.log(all_visited_items);
+
+    var visitNodes_list = visitItemsToVisitNodes(all_visited_items, url_array),
+    	num_of_root_visit_nodes = (getRootVisitNodes(visitNodes_list)).length;
 
     console.log("num of root visit nodes " + num_of_root_visit_nodes);
 
     for (var z = 0; z < num_of_root_visit_nodes; z++) {
 	//while (visitNodes_list.length != num_of_root_visit_nodes) {
 
+		//Outer (i) is parent trying to find child
     	for (var i = 0; i < visitNodes_list.length; i++) {
-    		visitNode_outer = visitNodes_list[i];
 
+    		//Inner (j) is child
   			for (var j = 0; j < visitNodes_list.length; j++) {
 
-  				//Skip if root node
+  				//Skip if inner node (j) is root node
   				if (visitNodes_list[j] && visitNodes_list[j].referringVisitId !== 0) {
-  					
-  					visitNode_inner = visitNodes_list[j];
 
-	  				if((visitNode_inner && visitNode_outer) && visitNode_inner.referringVisitId == visitNode_outer.visitId) {
+  					//If this is true the inner node (j) is the child of outer node (i)
+	  				if((visitNodes_list[j] && visitNodes_list[i]) && visitNodes_list[j].referringVisitId == visitNodes_list[i].visitId) {
 	  					
 	  					visitNodes_list[i].addChild(visitNodes_list[j]);
 	  					visitNodes_list[j] = undefined;
-	  				}
-
-	  				//If they both are not undefined
-	  				if (visitNodes_list[i] && visitNodes_list[j]) {
+	  					
+	  					console.log('splice');
+	  					visitNodes_list.splice(j, 1);
+	  				} 
+	  				//Check if the inner node (j) is the child of any of the outer node's (i) children
+	  				else if (visitNodes_list[i] && visitNodes_list[j]) {
 	  					//searchChildren(visitNodes_list[i], visitNodes_list[j]);
 	  				}
   				}
@@ -150,19 +154,6 @@ function treeNodes(all_visited_items, url_array) {
   					console.log('skip');
   				}
   			}
-    	}
-
-    	console.log('Remove all undefined');
-    	console.log(visitNodes_list);
-
-    	//Removed all undefined elements
-    	for (var i = 0; i < visitNodes_list.length; i++) {
-
-    		if(visitNodes_list[i] === undefined) {
-
-    			console.log('splice');
-    			visitNodes_list.splice(i, 1);
-    		}
     	}
     }
 
